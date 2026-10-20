@@ -18,3 +18,29 @@ def get_connection():
         password=os.getenv("DB_PASSWORD"),
         port=os.getenv("DB_PORT", "5432")
     )
+def check_database_connection():
+    connection = get_connection()
+    cursor = connection.cursor()
+
+    try:
+        cursor.execute("""
+            SELECT
+                current_database(),
+                current_user,
+                inet_server_addr(),
+                inet_server_port()
+        """)
+
+        print("DATABASE CONNECTION:", cursor.fetchone())
+
+        cursor.execute("""
+            SELECT COUNT(*)
+            FROM habit_scores
+            WHERE user_id = 1
+        """)
+
+        print("USER 1 HABIT SCORE COUNT:", cursor.fetchone()[0])
+
+    finally:
+        cursor.close()
+        connection.close()
