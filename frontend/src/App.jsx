@@ -1,4 +1,4 @@
-﻿import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import jsPDF from "jspdf";
 import * as XLSX from "xlsx";
 import {
@@ -182,41 +182,6 @@ const loadStreaks = async () => {
     console.error("Failed to load streaks:", error);
   }
 };
-
-
-
-const loadHabitScores = async () => {
-  const token = localStorage.getItem("token");
-
-  if (!token) return;
-
-  try {
-    const response = await fetch(`${API_URL}/habit-score`, {
-      method: "GET",
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-    });
-
-    if (!response.ok) {
-      throw new Error("Failed to load habit scores");
-    }
-
-    const data = await response.json();
-
-    console.log("Habit Score History:", data);
-
-    const history = data.history || [];
-
-    setHabitHistory(history);
-    setHabitScore(history.length > 0 ? history[0] : null);
-
-  } catch (error) {
-    console.error("Habit score loading error:", error);
-  }
-};
-
-
 
 const loadMLPrediction = async () => {
   console.log("ML FUNCTION CALLED");
@@ -1048,7 +1013,7 @@ setAlarmSettings(nextSettings);
 localStorage.setItem("alarmSettings", JSON.stringify(nextSettings));
 
 
-    setAlarmMessage("Alarm created with your selected challenge! â°");
+    setAlarmMessage("Alarm created with your selected challenge! ⏰");
 
     // Clear form
     setAlarmName("");
@@ -1780,7 +1745,7 @@ const handleUpdateAlarm = async () => {
     const data = await response.json();
 
     if (response.ok) {
-      setAlarmMessage("Alarm updated successfully! âœ…");
+      setAlarmMessage("Alarm updated successfully! ✅");
 
       setEditingAlarmId(null);
       setEditAlarmTime("");
@@ -1856,7 +1821,7 @@ const handleCancelEdit = () => {
       });
       const data = await response.json();
       if (response.ok) {
-        setBackendResult(data.correct ? "Correct answer! ðŸŽ‰" : "Incorrect answer. Try again.");
+        setBackendResult(data.correct ? "Correct answer! 🎉" : "Incorrect answer. Try again.");
         await loadChallengeAnalytics();
       } else setBackendResult(data.detail || "Could not submit answer.");
     } catch (error) { setBackendResult("Cannot connect to backend."); }
@@ -1884,7 +1849,7 @@ const handleCancelEdit = () => {
     try {
       const response = await fetch(`${API_URL}/alarm-challenges?alarm_id=${selectedAlarmId}&challenge_id=${backendChallenge.challenge_id}`, { method: "POST", headers: { Authorization: `Bearer ${token}` } });
       const data = await response.json();
-      if (response.ok) setAlarmChallengeMessage("Challenge linked to alarm successfully! ðŸŽ‰");
+      if (response.ok) setAlarmChallengeMessage("Challenge linked to alarm successfully! 🎉");
       else setAlarmChallengeMessage(data.detail || "Could not link challenge to alarm.");
     } catch (error) { setAlarmChallengeMessage("Cannot connect to backend."); }
   };
@@ -1902,7 +1867,7 @@ const handleCancelEdit = () => {
       });
       const data = await response.json();
       if (response.ok) {
-        setBackendResult(data.verified ? "Wake-up verified! Alarm can be dismissed. ðŸŽ‰" : "Answer is not correct. Please try again.");
+        setBackendResult(data.verified ? "Wake-up verified! Alarm can be dismissed. 🎉" : "Answer is not correct. Please try again.");
         await loadChallengeAnalytics();
       } else setBackendResult(data.detail || "Wake-up verification failed.");
     } catch (error) { setBackendResult("Cannot connect to backend."); }
@@ -1910,7 +1875,6 @@ const handleCancelEdit = () => {
   };
 
   const loadM3Dashboard = async () => {
-    console.log("M3 REFRESH BUTTON CLICKED");
     const token = localStorage.getItem("token");
     if (!token) return;
 
@@ -1926,24 +1890,15 @@ const handleCancelEdit = () => {
       ]);
 
       const habitData = await habitResponse.json();
-      console.log("HABIT RESPONSE STATUS:", habitResponse.status);
-console.log("HABIT RESPONSE DATA:", habitData);
-console.log("LATEST HABIT SCORE:", habitData.history?.[0]);
       const recommendationsData = await recommendationsResponse.json();
       const adaptiveData = await adaptiveResponse.json();
       const eventsData = await eventsResponse.json();
 
-
-
-if (habitResponse.ok) {
-  const history = habitData.history || [];
-
-  console.log("FULL HABIT API DATA:", habitData);
-  console.log("LATEST HABIT SCORE:", history[0]);
-
-  setHabitHistory(history);
-  setHabitScore(history.length > 0 ? history[0] : null);
-}
+      if (habitResponse.ok) {
+        const history = habitData.history || [];
+        setHabitHistory(history);
+        setHabitScore(history.length > 0 ? history[0] : null);
+      }
 
       if (recommendationsResponse.ok) {
         setRecommendations(recommendationsData.recommendations || []);
@@ -2043,7 +1998,7 @@ const loadChallenges = async () => {
             {/* App Header */}
             <div className="text-center">
               <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-2xl bg-blue-600 text-3xl">
-                â°
+                ⏰
               </div>
 
               <h1 className="mt-4 text-3xl font-bold text-white">
@@ -2073,13 +2028,13 @@ const loadChallenges = async () => {
                     onClick={() => setSelectedPortal("user")}
                     className="rounded-2xl border border-slate-700 bg-slate-800 p-5 text-center transition hover:-translate-y-1 hover:border-blue-500 hover:bg-slate-800/80"
                   >
-                    <div className="text-4xl">ðŸ‘¤</div>
+                    <div className="text-4xl">👤</div>
                     <h3 className="mt-3 font-bold text-white">User</h3>
                     <p className="mt-2 text-sm text-slate-400">
                       Personal dashboard
                     </p>
                     <span className="mt-4 inline-block text-sm font-semibold text-blue-400">
-                      Login â†’
+                      Login →
                     </span>
                   </button>
 
@@ -2089,7 +2044,7 @@ const loadChallenges = async () => {
                     onClick={() => setSelectedPortal("wellness_coach")}
                     className="rounded-2xl border border-slate-700 bg-slate-800 p-5 text-center transition hover:-translate-y-1 hover:border-teal-500 hover:bg-slate-800/80"
                   >
-                    <div className="text-4xl">ðŸ§‘â€ðŸ«</div>
+                    <div className="text-4xl">🧑‍🏫</div>
                     <h3 className="mt-3 font-bold text-white">
                       Wellness Coach
                     </h3>
@@ -2097,7 +2052,7 @@ const loadChallenges = async () => {
                       Wellness monitoring
                     </p>
                     <span className="mt-4 inline-block text-sm font-semibold text-teal-400">
-                      Login â†’
+                      Login →
                     </span>
                   </button>
 
@@ -2107,13 +2062,13 @@ const loadChallenges = async () => {
                     onClick={() => setSelectedPortal("admin")}
                     className="rounded-2xl border border-slate-700 bg-slate-800 p-5 text-center transition hover:-translate-y-1 hover:border-purple-500 hover:bg-slate-800/80"
                   >
-                    <div className="text-4xl">ðŸ›¡ï¸</div>
+                    <div className="text-4xl">🛡️</div>
                     <h3 className="mt-3 font-bold text-white">Admin</h3>
                     <p className="mt-2 text-sm text-slate-400">
                       Platform management
                     </p>
                     <span className="mt-4 inline-block text-sm font-semibold text-purple-400">
-                      Login â†’
+                      Login →
                     </span>
                   </button>
 
@@ -2141,7 +2096,7 @@ const loadChallenges = async () => {
                   }}
                   className="mb-5 text-sm text-blue-400 hover:text-blue-300"
                 >
-                  â† Back to portal selection
+                  ← Back to portal selection
                 </button>
 
                 <form onSubmit={handleLogin}>
@@ -2285,7 +2240,7 @@ const loadChallenges = async () => {
         <div className="fixed inset-0 z-[9999] bg-black/90 backdrop-blur-sm flex items-center justify-center p-6">
           <div className="w-full max-w-2xl bg-slate-900 border-2 border-red-500 rounded-3xl shadow-2xl p-8">
             <div className="text-center">
-              <div className="text-7xl animate-pulse mb-4">â°</div>
+              <div className="text-7xl animate-pulse mb-4">⏰</div>
 
               <p className="text-red-400 font-bold uppercase tracking-widest text-sm">
                 Alarm Ringing
@@ -2309,7 +2264,7 @@ const loadChallenges = async () => {
                 <div className="mt-6 text-left">
                   <div className="flex items-center justify-between mb-3">
                     <h3 className="text-xl font-bold">
-                      ðŸ§  Wake-Up Challenge
+                      🧠 Wake-Up Challenge
                     </h3>
 
                     <span className="text-xs px-3 py-1 rounded-full bg-blue-600/20 text-blue-300">
@@ -2342,7 +2297,7 @@ const loadChallenges = async () => {
                     >
                       {ringingVerifying
                         ? "Verifying..."
-                        : "âœ“ Verify & Stop Alarm"}
+                        : "✓ Verify & Stop Alarm"}
                     </button>
 
                     <button
@@ -2353,7 +2308,7 @@ const loadChallenges = async () => {
   }}
   className="w-full mt-3 py-4 rounded-xl bg-yellow-600 hover:bg-yellow-700 font-bold"
 >
-  ðŸ’¤ Snooze Alarm
+  💤 Snooze Alarm
 </button>
                   </div>
                 </div>
@@ -2364,7 +2319,7 @@ const loadChallenges = async () => {
                   onClick={dismissActualAlarm}
                   className="w-full mt-6 py-4 rounded-xl bg-red-600 hover:bg-red-700 font-bold"
                 >
-                  ðŸ”• Stop Alarm
+                  🔕 Stop Alarm
                 </button>
               )}
 
@@ -2411,7 +2366,7 @@ const loadChallenges = async () => {
 >
   <div className="flex items-center gap-3">
     <div className="w-10 h-10 rounded-xl bg-blue-600 flex items-center justify-center text-xl">
-      ðŸ§
+      🧠
     </div>
 
     <div>
@@ -2441,24 +2396,24 @@ const loadChallenges = async () => {
 {[
   ...(userRole === "admin"
     ? [
-        ["admin", "ðŸ›¡ï¸", "Admin Dashboard"],
-        ["settings", "âš™ï¸", "Settings"],
+        ["admin", "🛡️", "Admin Dashboard"],
+        ["settings", "⚙️", "Settings"],
       ]
     : userRole === "wellness_coach"
     ? [
-        ["coach", "ðŸ§‘â€ðŸ«", "Wellness Coach"],
-        ["settings", "âš™ï¸", "Settings"],
+        ["coach", "🧑‍🏫", "Wellness Coach"],
+        ["settings", "⚙️", "Settings"],
       ]
     : [
-        ["dashboard", "ðŸ ", "Dashboard"],
-        ["executive", "ðŸ“ˆ", "Executive Dashboard"],
-        ["alarms", "â°", "Alarms"],
-        ["challenges", "ðŸ§ ", "Challenges"],
-        ["analytics", "ðŸ“Š", "Analytics & Behavior"],
-        ["habits", "ðŸŽ¯", "Habit Insights"],
-        ["recommendations", "ðŸ’¡", "Recommendations"],
-        ["profile", "ðŸ‘¤", "Profile & Habits"],
-        ["settings", "âš™ï¸", "Settings"],
+        ["dashboard", "🏠", "Dashboard"],
+        ["executive", "📈", "Executive Dashboard"],
+        ["alarms", "⏰", "Alarms"],
+        ["challenges", "🧠", "Challenges"],
+        ["analytics", "📊", "Analytics & Behavior"],
+        ["habits", "🎯", "Habit Insights"],
+        ["recommendations", "💡", "Recommendations"],
+        ["profile", "👤", "Profile & Habits"],
+        ["settings", "⚙️", "Settings"],
       ]),
 ].map(([page, icon, label]) => (
 
@@ -2496,7 +2451,7 @@ if (page === "admin") {
           ))}
         </nav>
         <div className="px-4 py-5 border-t border-slate-800">
-          <button onClick={handleLogout} className="w-full flex items-center gap-3 px-4 py-3 rounded-xl text-red-400 hover:bg-red-500/10 hover:text-red-300 transition text-left"><span>ðŸšª</span><span>Logout</span></button>
+          <button onClick={handleLogout} className="w-full flex items-center gap-3 px-4 py-3 rounded-xl text-red-400 hover:bg-red-500/10 hover:text-red-300 transition text-left"><span>🚪</span><span>Logout</span></button>
         </div>
       </aside>
 
@@ -2517,15 +2472,15 @@ if (page === "admin") {
 
           <div>
             <h1 className="text-2xl font-bold">
-              {activePage === "dashboard" && "ðŸ  Dashboard"}
-              {activePage === "alarms" && "â° Alarms"}
-              {activePage === "challenges" && "ðŸ§  Cognitive Challenges"}
-              {activePage === "analytics" && "ðŸ“Š Analytics"}
-              {activePage === "habits" && "ðŸŽ¯ Habit Insights"}
-              {activePage === "recommendations" && "ðŸ’¡ Recommendations"}
-              {activePage === "admin" && "ðŸ›¡ï¸ Admin Dashboard"}
-              {activePage === "profile" && "ðŸ‘¤ Profile"}
-              {activePage === "settings" && "âš™ï¸ Settings"}
+              {activePage === "dashboard" && "🏠 Dashboard"}
+              {activePage === "alarms" && "⏰ Alarms"}
+              {activePage === "challenges" && "🧠 Cognitive Challenges"}
+              {activePage === "analytics" && "📊 Analytics"}
+              {activePage === "habits" && "🎯 Habit Insights"}
+              {activePage === "recommendations" && "💡 Recommendations"}
+              {activePage === "admin" && "🛡️ Admin Dashboard"}
+              {activePage === "profile" && "👤 Profile"}
+              {activePage === "settings" && "⚙️ Settings"}
             </h1>
 
             <p className="text-slate-400 text-sm">
@@ -2547,7 +2502,7 @@ if (page === "admin") {
   className="relative text-2xl"
   title="Notifications"
 >
-  ðŸ””
+  🔔
 
   {notifications.filter((item) => !item.is_read).length > 0 && (
     <span className="absolute -top-2 -right-2 min-w-5 h-5 px-1 rounded-full bg-red-600 text-white text-xs flex items-center justify-center font-bold">
@@ -2566,7 +2521,7 @@ if (page === "admin") {
   }`}
   title="View your streaks"
 >
-  <span className="text-xl">ðŸ”¥</span>
+  <span className="text-xl">🔥</span>
   <span className="font-semibold">0</span>
 </button>
 
@@ -2585,7 +2540,7 @@ if (page === "admin") {
       }`}
     >
       <h3 className="font-bold text-lg">
-        ðŸ”” Notifications
+        🔔 Notifications
       </h3>
 
       <span
@@ -2684,7 +2639,7 @@ if (page === "admin") {
     }`}
   >
     <div className="flex items-center justify-between mb-4">
-      <h3 className="text-lg font-bold">ðŸ”¥ Your Streaks</h3>
+      <h3 className="text-lg font-bold">🔥 Your Streaks</h3>
 
       <button
         onClick={() => setShowStreaks(false)}
@@ -2695,7 +2650,7 @@ if (page === "admin") {
         }
         aria-label="Close streaks"
       >
-        âœ•
+        ✕
       </button>
     </div>
 
@@ -2704,7 +2659,7 @@ if (page === "admin") {
         appearance === "Light" ? "bg-orange-50" : "bg-orange-500/10"
       }`}
     >
-      <p className="text-4xl">ðŸ”¥</p>
+      <p className="text-4xl">🔥</p>
 
 
 <p className="text-3xl font-bold mt-2">
@@ -2731,8 +2686,8 @@ if (page === "admin") {
 {streakData.longest_streak}{" "}
 {streakData.longest_streak === 1 ? "day" : "days"}
 {streakData.longest_streak === 0
-  ? " â€” Start your first streak!"
-  : " â€” Your personal best!"}
+  ? " — Start your first streak!"
+  : " — Your personal best!"}
 
     </div>
 
@@ -2784,7 +2739,7 @@ if (page === "admin") {
       : "bg-slate-900 border-slate-800 text-white"
   }`}
 >
-            <div className="text-3xl mb-4">â°</div>
+            <div className="text-3xl mb-4">⏰</div>
             <h3 className="text-xl font-bold">Alarms</h3>
             <p className={`mt-2 ${appearance === "Light" ? "text-gray-600" : "text-slate-400"}`}>
   Create, edit and manage your wake-up alarms.
@@ -2799,12 +2754,12 @@ if (page === "admin") {
       : "bg-slate-900 border-slate-800 text-white"
   }`}
 >
-            <div className="text-3xl mb-4">ðŸ§ </div>
+            <div className="text-3xl mb-4">🧠</div>
             <h3 className="text-xl font-bold">Challenges</h3>
             <p className={`mt-2 ${appearance === "Light" ? "text-gray-600" : "text-slate-400"}`}>
   Generate and solve cognitive challenges before starting your day.
 </p>
-            <p className="text-purple-400 font-semibold mt-4">{selectedChallenge} Â· {selectedDifficulty}</p>
+            <p className="text-purple-400 font-semibold mt-4">{selectedChallenge} · {selectedDifficulty}</p>
           </button>
           <button
   onClick={() => setActivePage("analytics")}
@@ -2814,7 +2769,7 @@ if (page === "admin") {
       : "bg-slate-900 border-slate-800 text-white"
   }`}
 >
-            <div className="text-3xl mb-4">ðŸ“Š</div>
+            <div className="text-3xl mb-4">📊</div>
             <h3 className="text-xl font-bold">Analytics</h3>
             <p className={`mt-2 ${appearance === "Light" ? "text-gray-600" : "text-slate-400"}`}>
   Track challenge attempts, correct answers and accuracy.
@@ -2830,7 +2785,7 @@ if (page === "admin") {
       : "bg-slate-900 border-slate-800 text-white hover:border-yellow-500"
   }`}
 >
-  <div className="text-3xl mb-4">ðŸŽ¯</div>
+  <div className="text-3xl mb-4">🎯</div>
 
   <h3 className="text-xl font-bold">Habit Insights</h3>
 
@@ -2861,7 +2816,7 @@ if (page === "admin") {
       : "bg-slate-900 border-slate-800 text-white hover:border-cyan-500"
   }`}
 >
-  <div className="text-3xl mb-4">ðŸ‘¤</div>
+  <div className="text-3xl mb-4">👤</div>
 
   <h3 className="text-xl font-bold">Profile</h3>
 
@@ -2878,7 +2833,7 @@ if (page === "admin") {
       appearance === "Light" ? "text-cyan-700" : "text-cyan-400"
     }`}
   >
-    Open profile settings â†’
+    Open profile settings →
   </p>
 </button>
 
@@ -2988,7 +2943,7 @@ if (page === "admin") {
       appearance === "Light" ? "text-gray-900" : "text-white"
     }`}
   >
-    ðŸ›¡ï¸ Admin Dashboard
+    🛡️ Admin Dashboard
   </h2>
 
   <p
@@ -3082,7 +3037,7 @@ if (page === "admin") {
     <p className={`text-sm ${
       appearance === "Light" ? "text-gray-600" : "text-slate-400"
     }`}>
-      ðŸ§  Total Challenge Attempts
+      🧠 Total Challenge Attempts
     </p>
 
     <p className="text-3xl font-bold mt-2">
@@ -3101,7 +3056,7 @@ if (page === "admin") {
     <p className={`text-sm ${
       appearance === "Light" ? "text-gray-600" : "text-slate-400"
     }`}>
-      ðŸŽ¯ Challenge Accuracy
+      🎯 Challenge Accuracy
     </p>
 
     <p className="text-3xl font-bold mt-2">
@@ -3120,7 +3075,7 @@ if (page === "admin") {
     <p className={`text-sm ${
       appearance === "Light" ? "text-gray-600" : "text-slate-400"
     }`}>
-      ðŸ“Š Behavioral Events
+      📊 Behavioral Events
     </p>
 
     <p className="text-3xl font-bold mt-2">
@@ -3142,7 +3097,7 @@ if (page === "admin") {
   <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-6">
     <div>
       <h2 className="text-xl font-semibold">
-        ðŸ“‘ Admin Reports
+        📑 Admin Reports
       </h2>
 
       <p
@@ -3233,7 +3188,7 @@ if (page === "admin") {
       }}
       className="px-4 py-2 rounded-xl bg-blue-600 hover:bg-blue-700 text-white font-semibold"
     >
-      â¬‡ï¸ Download CSV Report
+      ⬇️ Download CSV Report
     </button>
   </div>
 
@@ -3300,7 +3255,7 @@ if (page === "admin") {
   <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 mb-6">
     <div>
       <h2 className="text-xl font-semibold">
-        ðŸ“Š Challenge Accuracy Overview
+        📊 Challenge Accuracy Overview
       </h2>
       <p
         className={`text-sm mt-1 ${
@@ -3390,7 +3345,7 @@ if (page === "admin") {
             >
               {item.correct_answers} correct out of{" "}
               {item.total_attempts} attempts
-              {" Â· "}
+              {" · "}
               {item.wrong_answers} wrong
             </p>
           </div>
@@ -3410,7 +3365,7 @@ if (page === "admin") {
   }`}
 >
   <h2 className="text-xl font-semibold mb-2">
-    ðŸ§  Challenge Performance by Type
+    🧠 Challenge Performance by Type
   </h2>
 
   <p
@@ -3517,7 +3472,7 @@ onClick={() => {
 }}
           className="px-4 py-2 rounded-xl bg-blue-600 hover:bg-blue-700 font-semibold"
         >
-          ðŸ”„ Refresh
+          🔄 Refresh
         </button>
 
       </div>
@@ -3605,7 +3560,7 @@ onClick={() => {
       appearance === "Light" ? "text-gray-900" : "text-white"
     }`}
   >
-    ðŸ§‘â€ðŸ« Wellness Coach Dashboard
+    🧑‍🏫 Wellness Coach Dashboard
   </h1>
 
       <p className={`mt-1 ${appearance === "Light" ? "text-gray-600" : "text-slate-400"}`}>
@@ -3681,7 +3636,7 @@ onClick={() => {
         </p>
 
         <p className="text-xs text-slate-400 mt-2">
-          Score â‰¥ 70
+          Score ≥ 70
         </p>
       </div>
 
@@ -3847,7 +3802,7 @@ onClick={() => {
     {/* Header */}
     <div>
       <h1 className="text-3xl font-bold">
-        ðŸ“ˆ Executive Dashboard
+        📈 Executive Dashboard
       </h1>
 
       <p
@@ -3907,7 +3862,7 @@ onClick={() => {
         </p>
 
         <p className="text-3xl font-bold mt-2">
-          {mlPrediction?.input_data?.accuracy ?? "â€”"}%
+          {mlPrediction?.input_data?.accuracy ?? "—"}%
         </p>
 
         <p
@@ -3948,7 +3903,7 @@ onClick={() => {
               : "text-slate-400"
           }`}
         >
-          7 correct Â· 2 wrong
+          7 correct · 2 wrong
         </p>
       </div>
 
@@ -4001,7 +3956,7 @@ onClick={() => {
     }`}
   >
     <h2 className="text-xl font-bold mb-5">
-      ðŸ¤– AI & Recommendation System
+      🤖 AI & Recommendation System
     </h2>
 
     <div className="space-y-4">
@@ -4063,14 +4018,14 @@ onClick={() => {
   }`}
 >
   <h2 className="text-xl font-bold mb-5">
-    âš™ï¸ System Health
+    ⚙️ System Health
   </h2>
 
   <div className="space-y-4">
 
     <div className="flex items-center justify-between">
       <span className={appearance === "Light" ? "text-gray-600" : "text-slate-400"}>
-        âš¡ Backend API
+        ⚡ Backend API
       </span>
 
       <span className={`px-3 py-1 rounded-full bg-green-500/20 font-semibold ${
@@ -4082,7 +4037,7 @@ onClick={() => {
 
     <div className="flex items-center justify-between">
       <span className={appearance === "Light" ? "text-gray-600" : "text-slate-400"}>
-        ðŸ—„ï¸ Database
+        🗄️ Database
       </span>
 
       <span className={`px-3 py-1 rounded-full bg-green-500/20 font-semibold ${
@@ -4094,7 +4049,7 @@ onClick={() => {
 
     <div className="flex items-center justify-between">
       <span className={appearance === "Light" ? "text-gray-600" : "text-slate-400"}>
-        ðŸ”” Notification System
+        🔔 Notification System
       </span>
 
       <span className={`px-3 py-1 rounded-full bg-green-500/20 font-semibold ${
@@ -4106,7 +4061,7 @@ onClick={() => {
 
     <div className="flex items-center justify-between">
       <span className={appearance === "Light" ? "text-gray-600" : "text-slate-400"}>
-        ðŸ¤– ML Engine
+        🤖 ML Engine
       </span>
 
       <span className={`px-3 py-1 rounded-full bg-green-500/20 font-semibold ${
@@ -4118,7 +4073,7 @@ onClick={() => {
 
     <div className="flex items-center justify-between">
       <span className={appearance === "Light" ? "text-gray-600" : "text-slate-400"}>
-        ðŸ“Š Analytics Engine
+        📊 Analytics Engine
       </span>
 
       <span className={`px-3 py-1 rounded-full bg-green-500/20 font-semibold ${
@@ -4145,7 +4100,7 @@ onClick={() => {
   }`}
 >
   <h2 className="text-xl font-bold mb-5">
-    ðŸ’¡ Executive Insights
+    💡 Executive Insights
   </h2>
 
   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -4159,7 +4114,7 @@ onClick={() => {
       }`}
     >
       <p className="font-semibold">
-        â° Wake-up Consistency
+        ⏰ Wake-up Consistency
       </p>
 
       <p
@@ -4186,7 +4141,7 @@ onClick={() => {
   }`}
 >
   <p className="font-semibold">
-    ðŸ§  Cognitive Performance
+    🧠 Cognitive Performance
   </p>
 
   <p
@@ -4209,7 +4164,7 @@ onClick={() => {
   }`}
 >
   <p className="font-semibold">
-    ðŸ˜´ Snooze Management
+    😴 Snooze Management
   </p>
 
   <p
@@ -4232,7 +4187,7 @@ onClick={() => {
   }`}
 >
   <p className="font-semibold">
-    ðŸ¤– AI Adaptation
+    🤖 AI Adaptation
   </p>
 
   <p
@@ -4343,19 +4298,11 @@ onClick={() => {
     }`}
   >
     <option value="">Select challenge type</option>
-    {[
-  "Logic Puzzles",
-  "Memory Challenge",
-  "Word Games",
-  "Pattern Recognition",
-  "Math Problems",
-  "Riddles",
-  "Quick Quiz",
-].map((type) => (
-  <option key={type} value={type}>
-    {type}
-  </option>
-))}
+    {[...new Set(challenges.map((c) => c[1]))].map((type) => (
+      <option key={type} value={type}>
+        {type}
+      </option>
+    ))}
   </select>
 </div>
 
@@ -4651,7 +4598,7 @@ onClick={() => {
             /* EDIT MODE */
             <div>
               <h4 className="text-xl font-semibold mb-5">
-                âœï¸ Edit Alarm
+                ✏️ Edit Alarm
               </h4>
 
               <div className="grid md:grid-cols-2 gap-5">
@@ -4961,7 +4908,7 @@ onClick={() => {
                       onClick={handleUpdateAlarm}
                       className="px-5 py-3 rounded-xl bg-green-600 hover:bg-green-700 text-white font-semibold transition"
                     >
-                      ðŸ’¾ Save Changes
+                      💾 Save Changes
                     </button>
 
 
@@ -4969,7 +4916,7 @@ onClick={() => {
                       onClick={handleCancelEdit}
                       className="px-5 py-3 rounded-xl bg-slate-700 hover:bg-slate-600 text-white font-semibold transition"
                     >
-                      âŒ Cancel
+                      ❌ Cancel
                     </button>
 
                   </div>
@@ -5037,7 +4984,7 @@ onClick={() => {
                       className="px-4 py-2 rounded-xl bg-amber-600 hover:bg-amber-700 text-white font-semibold transition"
                       title="Snooze alarm"
                     >
-                      ðŸ˜´ Snooze
+                      😴 Snooze
                     </button>
 
                     <button
@@ -5045,7 +4992,7 @@ onClick={() => {
                       className="px-4 py-2 rounded-xl bg-blue-600 hover:bg-blue-700 text-white font-semibold transition"
                       title="Edit alarm"
                     >
-                      âœï¸ Edit
+                      ✏️ Edit
                     </button>
 
 
@@ -5054,7 +5001,7 @@ onClick={() => {
                       className="px-4 py-2 rounded-xl bg-red-600 hover:bg-red-700 text-white font-semibold transition"
                       title="Delete alarm"
                     >
-                      ðŸ—‘ï¸ Delete
+                      🗑️ Delete
                     </button>
 
                   </div>
@@ -5110,13 +5057,13 @@ onClick={() => {
             }`}
           >
             <div className="text-2xl mb-2">
-              {challenge === "Logic Puzzles" && "ðŸ§©"}
-              {challenge === "Memory Challenge" && "ðŸ§ "}
-              {challenge === "Word Games" && "ðŸ”¤"}
-              {challenge === "Pattern Recognition" && "ðŸ”·"}
-              {challenge === "Math Problems" && "âž—"}
-              {challenge === "Riddles" && "â“"}
-              {challenge === "Quick Quiz" && "âš¡"}
+              {challenge === "Logic Puzzles" && "🧩"}
+              {challenge === "Memory Challenge" && "🧠"}
+              {challenge === "Word Games" && "🔤"}
+              {challenge === "Pattern Recognition" && "🔷"}
+              {challenge === "Math Problems" && "➗"}
+              {challenge === "Riddles" && "❓"}
+              {challenge === "Quick Quiz" && "⚡"}
             </div>
 
             <div className="text-sm font-semibold">
@@ -5170,7 +5117,7 @@ onClick={() => {
         <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4 mb-6">
           <div>
             <h2 className="text-2xl font-bold">
-              ðŸ§  Cognitive Challenge Engine
+              🧠 Cognitive Challenge Engine
             </h2>
 
             <p className={`mt-1 ${
@@ -5185,7 +5132,7 @@ onClick={() => {
             disabled={challengeLoading}
             className="px-6 py-3 rounded-xl bg-purple-600 hover:bg-purple-700 disabled:opacity-50 font-semibold text-white"
           >
-            {challengeLoading ? "Generating..." : "âœ¨ Generate New Challenge"}
+            {challengeLoading ? "Generating..." : "✨ Generate New Challenge"}
           </button>
         </div>
 
@@ -5196,7 +5143,7 @@ onClick={() => {
             { label: "Difficulty", value: selectedDifficulty },
             {
               label: "Challenge ID",
-              value: backendChallenge?.challenge_id || "â€”",
+              value: backendChallenge?.challenge_id || "—",
             },
           ].map((item) => (
             <div
@@ -5286,7 +5233,7 @@ onClick={() => {
             <p className={
               appearance === "Light" ? "text-gray-600" : "text-slate-400"
             }>
-              Click â€œGenerate New Challengeâ€ to get a challenge from the backend.
+              Click “Generate New Challenge” to get a challenge from the backend.
             </p>
           </div>
         )}
@@ -5298,7 +5245,7 @@ onClick={() => {
           }`}
         >
           <h3 className="text-xl font-semibold mb-4">
-            â° Alarm Challenge
+            ⏰ Alarm Challenge
           </h3>
 
           <p className={`mb-4 ${
@@ -5321,7 +5268,7 @@ onClick={() => {
 
               {alarms.map((alarm) => (
                 <option key={alarm[0]} value={alarm[0]}>
-                  {alarm[3]} â€” {formatAlarmTime(alarm[2])}
+                  {alarm[3]} — {formatAlarmTime(alarm[2])}
                 </option>
               ))}
             </select>
@@ -5416,7 +5363,7 @@ onClick={() => {
       <div className="flex items-center justify-between mb-4 gap-3">
         <div>
           <h2 className="text-2xl font-bold">
-            ðŸ“Š Challenge Analytics
+            📊 Challenge Analytics
           </h2>
           <p className={`text-sm mt-1 ${
             appearance === "Light" ? "text-gray-600" : "text-slate-400"
@@ -5520,7 +5467,7 @@ onClick={() => {
           <p className={`font-semibold mb-3 ${
             appearance === "Light" ? "text-gray-700" : "text-slate-300"
           }`}>
-            ðŸ“Š Challenge Performance
+            📊 Challenge Performance
           </p>
 
           <div className="w-full h-72">
@@ -5579,7 +5526,7 @@ onClick={() => {
     >
       <div className="mb-6">
         <h2 className="text-2xl font-bold">
-          ðŸ§  Behavioral Analytics Engine
+          🧠 Behavioral Analytics Engine
         </h2>
         <p className={`mt-1 ${
           appearance === "Light" ? "text-gray-600" : "text-slate-400"
@@ -5597,7 +5544,7 @@ onClick={() => {
           <p className={`text-sm ${
             appearance === "Light" ? "text-gray-600" : "text-slate-400"
           }`}>
-            ðŸ˜´ Snooze Pattern Analysis
+            😴 Snooze Pattern Analysis
           </p>
           <p className="text-2xl font-bold mt-2">
             {Object.values(alarmSettings).reduce(
@@ -5618,7 +5565,7 @@ onClick={() => {
           <p className={`text-sm ${
             appearance === "Light" ? "text-gray-600" : "text-slate-400"
           }`}>
-            â° Wake-up Behavior Tracking
+            ⏰ Wake-up Behavior Tracking
           </p>
           <p className="text-2xl font-bold mt-2">
             {alarms.filter((a) => a[4]).length} active alarms
@@ -5637,7 +5584,7 @@ onClick={() => {
           <p className={`text-sm ${
             appearance === "Light" ? "text-gray-600" : "text-slate-400"
           }`}>
-            ðŸ“ˆ Productivity Correlation Analysis
+            📈 Productivity Correlation Analysis
           </p>
           <p className="text-2xl font-bold mt-2">
             {analytics
@@ -5658,7 +5605,7 @@ onClick={() => {
           <p className={`text-sm ${
             appearance === "Light" ? "text-gray-600" : "text-slate-400"
           }`}>
-            ðŸ” Habit Consistency Monitoring
+            🔁 Habit Consistency Monitoring
           </p>
           <p className="text-2xl font-bold mt-2">
             {alarms.length} schedules
@@ -5677,7 +5624,7 @@ onClick={() => {
           <p className={`text-sm ${
             appearance === "Light" ? "text-gray-600" : "text-slate-400"
           }`}>
-            ðŸŒ™ Sleep Pattern Analytics
+            🌙 Sleep Pattern Analytics
           </p>
           <p className="text-2xl font-bold mt-2">
             {Math.floor(Number(sleepDurationMinutes || 0) / 60)}h{" "}
@@ -5697,7 +5644,7 @@ onClick={() => {
           <p className={`text-sm ${
             appearance === "Light" ? "text-gray-600" : "text-slate-400"
           }`}>
-            ðŸŒ Time Zone
+            🌍 Time Zone
           </p>
           <p className="text-2xl font-bold mt-2 break-words">
             {timeZone}
@@ -5736,7 +5683,7 @@ onClick={() => {
 >
               <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
                 <div>
-                  <h2 className="text-2xl font-bold">ðŸŽ¯ Habit Tracking Dashboard</h2>
+                  <h2 className="text-2xl font-bold">🎯 Habit Tracking Dashboard</h2>
                   <p className={`mt-1 ${appearance === "Light" ? "text-gray-600" : "text-slate-400"}`}>
   Your M3 adaptive intelligence, habit score and personalized recommendations.
 </p>
@@ -5751,13 +5698,13 @@ onClick={() => {
     onClick={exportAnalyticsReport}
     className="px-4 py-2 rounded-xl bg-green-600 hover:bg-green-700 font-semibold"
   >
-    ðŸ“Š Export Report
+    📊 Export Report
   </button>
   <button
   onClick={exportExcelReport}
   className="px-4 py-2 rounded-xl bg-blue-600 hover:bg-blue-700 font-semibold"
 >
-  ðŸ“— Export Excel
+  📗 Export Excel
 </button>
 </div>
               </div>
@@ -5792,7 +5739,7 @@ onClick={() => {
         </p>
       </div>
 
-      <span className="text-3xl">ðŸŽ¯</span>
+      <span className="text-3xl">🎯</span>
     </div>
 
     <div className="flex justify-center items-center py-7">
@@ -5840,7 +5787,7 @@ onClick={() => {
       appearance === "Light" ? "bg-indigo-50" : "bg-indigo-500/10"
     }`}>
       <p className="text-indigo-500 font-semibold">
-        âœ¨ Habit improvement tracker
+        ✨ Habit improvement tracker
       </p>
     </div>
   </div>
@@ -5867,25 +5814,25 @@ onClick={() => {
         label: "Wake-up Consistency",
         value: habitScore?.wake_up_consistency ?? 0,
         color: "bg-indigo-500",
-        icon: "ðŸŒ…",
+        icon: "🌅",
       },
       {
         label: "Challenge Success",
         value: habitScore?.challenge_success ?? 0,
         color: "bg-purple-500",
-        icon: "ðŸ§ ",
+        icon: "🧠",
       },
       {
         label: "Snooze Reduction",
         value: habitScore?.snooze_reduction ?? 0,
         color: "bg-blue-500",
-        icon: "â°",
+        icon: "⏰",
       },
       {
         label: "Sleep Adherence",
         value: habitScore?.sleep_adherence ?? 0,
         color: "bg-cyan-500",
-        icon: "ðŸŒ™",
+        icon: "🌙",
       },
     ].map((metric) => {
       const value = Math.max(
@@ -5934,7 +5881,7 @@ onClick={() => {
   <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
     <div>
       <h2 className="text-2xl font-bold">
-        ðŸ¤– AI Adaptive Difficulty
+        🤖 AI Adaptive Difficulty
       </h2>
       <p
         className={`mt-1 ${
@@ -6040,7 +5987,7 @@ onClick={() => {
   }`}
 >
   <h3 className="text-xl font-bold mb-4">
-    ðŸ“ˆ Habit Score History
+    📈 Habit Score History
   </h3>
 
   {habitHistory.length === 0 ? (
@@ -6207,7 +6154,7 @@ onClick={() => {
     }`}
   >
     <h3 className="text-xl font-bold mb-4">
-      ðŸ§  Adaptive Difficulty History
+      🧠 Adaptive Difficulty History
     </h3>
 
     {adaptiveHistory.length === 0 ? (
@@ -6230,7 +6177,7 @@ onClick={() => {
                 {item.challenge_type || "Challenge"}
               </p>
               <p className={`text-sm ${appearance === "Light" ? "text-gray-600" : "text-slate-400"}`}>
-                Accuracy: {item.accuracy ?? item.performance ?? "â€”"}%
+                Accuracy: {item.accuracy ?? item.performance ?? "—"}%
               </p>
             </div>
 
@@ -6241,7 +6188,7 @@ onClick={() => {
                   : "bg-purple-500/20 text-purple-300"
               }`}
             >
-              {item.new_difficulty || "â€”"}
+              {item.new_difficulty || "—"}
             </span>
           </div>
         ))}
@@ -6258,7 +6205,7 @@ onClick={() => {
     }`}
   >
     <h3 className="text-xl font-bold mb-4">
-      ðŸ“ Behavioral Activity
+      📝 Behavioral Activity
     </h3>
 
     <div className="grid grid-cols-2 gap-3 mb-4">
@@ -6292,7 +6239,7 @@ onClick={() => {
     {behavioralEvents.length > 0 && (
       <div className="mb-5">
         <p className={`font-semibold mb-3 ${appearance === "Light" ? "text-gray-700" : "text-slate-300"}`}>
-          ðŸ“Š Behavioral Event Trend
+          📊 Behavioral Event Trend
         </p>
 
         <div className="w-full h-64">
@@ -6413,7 +6360,7 @@ onClick={() => {
       }`}
     >
       <h2 className="text-2xl font-bold">
-        ðŸ’¡ Personalized Recommendations
+        💡 Personalized Recommendations
       </h2>
 
       <p
@@ -6559,14 +6506,14 @@ onClick={() => {
 
               {item.is_completed ? (
                 <span className="px-4 py-2 rounded-xl bg-green-500/20 text-green-600 font-semibold whitespace-nowrap">
-                  âœ“ Completed
+                  ✓ Completed
                 </span>
               ) : (
                 <button
                   onClick={() => handleCompleteRecommendation(item.id)}
                   className="px-4 py-2 rounded-xl bg-green-600 hover:bg-green-700 text-white font-semibold whitespace-nowrap"
                 >
-                  âœ“ Mark Completed
+                  ✓ Mark Completed
                 </button>
               )}
 
@@ -6831,7 +6778,7 @@ onClick={() => {
       }`}
     >
       <h2 className="text-2xl font-bold mb-2">
-        âš™ï¸ App Settings
+        ⚙️ App Settings
       </h2>
 
       <p
@@ -6957,7 +6904,7 @@ function SlidingPuzzle({ difficulty }) {
     <div className="text-center">
 
       <h2 className="text-3xl font-bold mb-2">
-        ðŸ§© Sliding Puzzle
+        🧩 Sliding Puzzle
       </h2>
 
       <p className="text-slate-400 mb-6">
@@ -6996,7 +6943,7 @@ function SlidingPuzzle({ difficulty }) {
 
       {won && (
         <p className="text-green-400 font-bold text-xl mt-4">
-          ðŸŽ‰ Puzzle Solved!
+          🎉 Puzzle Solved!
         </p>
       )}
 
@@ -7026,16 +6973,16 @@ function MemoryGame({ difficulty }) {
   };
 
   const symbols = [
-    "ðŸŽ",
-    "ðŸŒ",
-    "ðŸ‡",
-    "ðŸ‰",
-    "ðŸ“",
-    "ðŸ’",
-    "ðŸ¥",
-    "ðŸ",
-    "ðŸ¥­",
-    "ðŸ‘",
+    "🍎",
+    "🍌",
+    "🍇",
+    "🍉",
+    "🍓",
+    "🍒",
+    "🥝",
+    "🍍",
+    "🥭",
+    "🍑",
   ];
 
   const createCards = () => {
@@ -7159,7 +7106,7 @@ function MemoryGame({ difficulty }) {
     <div className="text-center">
 
       <h2 className="text-3xl font-bold mb-2">
-        ðŸ§  Memory Match
+        🧠 Memory Match
       </h2>
 
       <p className="text-slate-400 mb-6">
@@ -7190,7 +7137,7 @@ function MemoryGame({ difficulty }) {
 
       {won && (
         <p className="text-green-400 font-bold text-xl mt-4">
-          ðŸŽ‰ All pairs matched!
+          🎉 All pairs matched!
         </p>
       )}
 
@@ -7292,7 +7239,7 @@ function WordScramble({ difficulty }) {
     ) {
 
       setScore((s) => s + 1);
-      setMessage("Correct! ðŸŽ‰");
+      setMessage("Correct! 🎉");
 
     } else {
 
@@ -7312,7 +7259,7 @@ function WordScramble({ difficulty }) {
     <div className="max-w-xl mx-auto text-center">
 
       <h2 className="text-3xl font-bold mb-2">
-        ðŸ”¤ Word Scramble
+        🔤 Word Scramble
       </h2>
 
       <p className="text-slate-400 mb-8">
@@ -7378,14 +7325,14 @@ function PatternGame({ difficulty }) {
 
     Beginner: [
       {
-        sequence: ["ðŸ”´", "ðŸ”µ", "ðŸ”´", "ðŸ”µ", "?"],
-        options: ["ðŸ”´", "ðŸŸ¢", "ðŸŸ¡"],
-        answer: "ðŸ”´",
+        sequence: ["🔴", "🔵", "🔴", "🔵", "?"],
+        options: ["🔴", "🟢", "🟡"],
+        answer: "🔴",
       },
       {
-        sequence: ["â­", "ðŸŒ™", "â­", "ðŸŒ™", "?"],
-        options: ["â­", "â˜€ï¸", "ðŸŒ™"],
-        answer: "â­",
+        sequence: ["⭐", "🌙", "⭐", "🌙", "?"],
+        options: ["⭐", "☀️", "🌙"],
+        answer: "⭐",
       },
     ],
 
@@ -7464,7 +7411,7 @@ function PatternGame({ difficulty }) {
   const checkAnswer = (answer) => {
 
     if (answer === currentPattern.answer) {
-      setResult("Correct! ðŸŽ‰");
+      setResult("Correct! 🎉");
     } else {
       setResult("Wrong! Try another pattern.");
     }
@@ -7479,7 +7426,7 @@ function PatternGame({ difficulty }) {
     <div className="text-center max-w-2xl mx-auto">
 
       <h2 className="text-3xl font-bold mb-2">
-        ðŸ”· Pattern Recognition
+        🔷 Pattern Recognition
       </h2>
 
       <p className="text-slate-400 mb-8">
@@ -7581,11 +7528,11 @@ function MathGame({ difficulty }) {
         question = `${a} - ${b}`;
         answer = a - b;
       } else if (operation === 2) {
-        question = `${a} Ã— ${b}`;
+        question = `${a} × ${b}`;
         answer = a * b;
       } else {
         a = Math.floor(Math.random() * 12) + 1;
-        question = `${a}Â²`;
+        question = `${a}²`;
         answer = a * a;
       }
 
@@ -7599,7 +7546,7 @@ function MathGame({ difficulty }) {
 
       if (operation === 0) {
 
-        question = `${a} Ã— ${b} + ${b}`;
+        question = `${a} × ${b} + ${b}`;
         answer = a * b + b;
 
       } else if (operation === 1) {
@@ -7607,7 +7554,7 @@ function MathGame({ difficulty }) {
         const root =
           Math.floor(Math.random() * 12) + 2;
 
-        question = `âˆš${root * root}`;
+        question = `√${root * root}`;
         answer = root;
 
       } else if (operation === 2) {
@@ -7615,12 +7562,12 @@ function MathGame({ difficulty }) {
         const number =
           Math.floor(Math.random() * 15) + 1;
 
-        question = `${number}Â² + ${b}`;
+        question = `${number}² + ${b}`;
         answer = number * number + b;
 
       } else {
 
-        question = `(${a} + ${b}) Ã— 2`;
+        question = `(${a} + ${b}) × 2`;
         answer = (a + b) * 2;
       }
 
@@ -7635,17 +7582,17 @@ function MathGame({ difficulty }) {
 
       if (operation === 0) {
 
-        question = `${a} Ã— ${b} - ${c}`;
+        question = `${a} × ${b} - ${c}`;
         answer = a * b - c;
 
       } else if (operation === 1) {
 
-        question = `${a}Â² - ${b}`;
+        question = `${a}² - ${b}`;
         answer = a * a - b;
 
       } else if (operation === 2) {
 
-        question = `${a}Â³`;
+        question = `${a}³`;
         answer = a * a * a;
 
       } else {
@@ -7653,7 +7600,7 @@ function MathGame({ difficulty }) {
         const root =
           Math.floor(Math.random() * 15) + 1;
 
-        question = `âˆš${root * root} + ${c}`;
+        question = `√${root * root} + ${c}`;
         answer = root + c;
       }
 
@@ -7669,7 +7616,7 @@ function MathGame({ difficulty }) {
       if (operation === 0) {
 
         question =
-          `(${a} + ${b}) Ã— ${c}`;
+          `(${a} + ${b}) × ${c}`;
 
         answer =
           (a + b) * c;
@@ -7677,7 +7624,7 @@ function MathGame({ difficulty }) {
       } else if (operation === 1) {
 
         question =
-          `${a}Â² + ${b}Â²`;
+          `${a}² + ${b}²`;
 
         answer =
           a * a + b * b;
@@ -7685,7 +7632,7 @@ function MathGame({ difficulty }) {
       } else if (operation === 2) {
 
         question =
-          `âˆš${a * a} Ã— ${b}`;
+          `√${a * a} × ${b}`;
 
         answer =
           a * b;
@@ -7693,7 +7640,7 @@ function MathGame({ difficulty }) {
       } else if (operation === 3) {
 
         question =
-          `${a}Â³ - ${b}`;
+          `${a}³ - ${b}`;
 
         answer =
           a * a * a - b;
@@ -7701,7 +7648,7 @@ function MathGame({ difficulty }) {
       } else {
 
         question =
-          `(${a} + ${b})Â²`;
+          `(${a} + ${b})²`;
 
         answer =
           (a + b) * (a + b);
@@ -7731,7 +7678,7 @@ function MathGame({ difficulty }) {
   const checkAnswer = () => {
 
     // Prevent the same question from increasing the score more than once.
-    if (message === "Correct! ðŸŽ‰") {
+    if (message === "Correct! 🎉") {
       return;
     }
 
@@ -7740,7 +7687,7 @@ function MathGame({ difficulty }) {
     ) {
 
       setScore((s) => s + 1);
-      setMessage("Correct! ðŸŽ‰");
+      setMessage("Correct! 🎉");
 
     } else {
 
@@ -7761,7 +7708,7 @@ function MathGame({ difficulty }) {
     <div className="max-w-xl mx-auto text-center">
 
       <h2 className="text-3xl font-bold mb-2">
-        âž— Math Challenge
+        ➗ Math Challenge
       </h2>
 
       <p className="text-slate-400 mb-8">
@@ -8010,7 +7957,7 @@ function RiddleGame({ difficulty, appearance = "Dark" }) {
 
     if (option === currentQuestion.answer) {
       setScore((previousScore) => previousScore + 1);
-      setResult("Correct! ðŸŽ‰");
+      setResult("Correct! 🎉");
     } else {
       setResult(`Wrong! Correct answer: ${currentQuestion.answer}`);
     }
@@ -8037,7 +7984,7 @@ function RiddleGame({ difficulty, appearance = "Dark" }) {
       <div className="max-w-2xl mx-auto text-center py-10">
         <div className={`rounded-3xl p-8 ${cardClass}`}>
           <h2 className="text-3xl font-bold mb-4">
-            â“ Riddle Challenge Complete!
+            ❓ Riddle Challenge Complete!
           </h2>
 
           <p className={mutedText}>Your score</p>
@@ -8068,7 +8015,7 @@ function RiddleGame({ difficulty, appearance = "Dark" }) {
   return (
     <div className="max-w-2xl mx-auto text-center">
       <h2 className="text-3xl font-bold mb-2">
-        â“ Riddle Challenge
+        ❓ Riddle Challenge
       </h2>
 
       <p className={`${mutedText} mb-6`}>
@@ -8168,7 +8115,7 @@ function QuizGame({ difficulty, appearance = "Dark" }) {
         answer: "CSS",
       },
       {
-        question: "What is 9 Ã— 6?",
+        question: "What is 9 × 6?",
         options: ["45", "54", "56", "64"],
         answer: "54",
       },
@@ -8223,7 +8170,7 @@ function QuizGame({ difficulty, appearance = "Dark" }) {
     Hard: [
       {
         question: "Which algorithmic complexity is typical for binary search?",
-        options: ["O(n)", "O(log n)", "O(nÂ²)", "O(2â¿)"],
+        options: ["O(n)", "O(log n)", "O(n²)", "O(2ⁿ)"],
         answer: "O(log n)",
       },
       {
@@ -8326,7 +8273,7 @@ function QuizGame({ difficulty, appearance = "Dark" }) {
 
     if (option === currentQuestion.answer) {
       setScore((previous) => previous + 1);
-      setResult("Correct! ðŸŽ‰");
+      setResult("Correct! 🎉");
     } else {
       setResult(`Wrong! Correct answer: ${currentQuestion.answer}`);
     }
@@ -8353,7 +8300,7 @@ function QuizGame({ difficulty, appearance = "Dark" }) {
       <div className="max-w-2xl mx-auto text-center py-10">
         <div className={`rounded-3xl p-8 ${cardClass}`}>
           <h2 className="text-3xl font-bold mb-4">
-            ðŸ§  Quick Quiz Complete!
+            🧠 Quick Quiz Complete!
           </h2>
 
           <p className={mutedText}>Your score</p>
@@ -8376,7 +8323,7 @@ function QuizGame({ difficulty, appearance = "Dark" }) {
   return (
     <div className="max-w-2xl mx-auto text-center">
       <h2 className="text-3xl font-bold mb-2">
-        ðŸ§  Quick Quiz
+        🧠 Quick Quiz
       </h2>
 
       <p className={`${mutedText} mb-6`}>
@@ -8487,7 +8434,7 @@ return (
           appearance === "Light" ? "text-gray-700" : "text-slate-300"
         }`}
       >
-        â° Default Alarm Time
+        ⏰ Default Alarm Time
       </label>
 
       <input
@@ -8509,7 +8456,7 @@ return (
           appearance === "Light" ? "text-gray-700" : "text-slate-300"
         }`}
       >
-        ðŸ§  Challenge Difficulty
+        🧠 Challenge Difficulty
       </label>
 
       <select
@@ -8536,7 +8483,7 @@ return (
           appearance === "Light" ? "text-gray-700" : "text-slate-300"
         }`}
       >
-        ðŸ”” Notifications
+        🔔 Notifications
       </label>
 
       <label
@@ -8561,7 +8508,7 @@ return (
           appearance === "Light" ? "text-gray-700" : "text-slate-300"
         }`}
       >
-        ðŸŽ¨ Appearance
+        🎨 Appearance
       </label>
 
       <select
@@ -8583,7 +8530,7 @@ return (
       type="submit"
       className="w-full py-3 rounded-xl bg-blue-600 hover:bg-blue-700 text-white font-semibold transition"
     >
-      ðŸ’¾ Save Settings
+      💾 Save Settings
     </button>
 
     {message && (
